@@ -1,0 +1,151 @@
+.onboarding-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.slide{
+    text-align: center;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.slide-content{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 24px;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgba(2, 86, 175, 0.6), rgba(0, 1, 1, 0.6));
+}
+
+.slide-top {
+    margin-top: 32;
+}
+
+.logo {
+    font-size: 50px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.tagline{
+    font-size: 30px;
+    margin:4px 0 0 0;
+}
+
+.slide-bottom{
+    margin: 48px;
+}
+.title{
+    text-align: center;
+    font-size: 22px;
+    font-size: 600;
+    margin: 0 0 8px 0;
+}
+
+.subtitle{
+    font-size: 14px;
+    margin:0;
+    text-align: center;
+}
+
+.dots{
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+    background: gray;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot.active {
+  background-color: white;
+}
+
+/* ...existing code... */
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 16px;
+}
+
+.btn-link {
+  background: rgba(0, 123, 255, 0.8);
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  
+}
+
+.btn-link:hover {
+  background-color: rgba(9, 16, 102, 0.629);;
+  transform: translateY(-2px);
+}
+
+.btn-get-started {
+    background: linear-gradient(135deg, #365af8 0%, #0334a7 100%);
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 16px 32px;
+  margin-top: 12px;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+}
+
+.btn-get-started:hover {
+    background: linear-gradient(135deg, #000205a1 0%, #000205a1 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.btn-get-started:active {
+  transform: translateY(-1px);
+}
+
+/* ...existing code... */
+
+/* Responsive: adjust on larger screens */
+@media (min-width: 768px) {
+  .slide {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .title {
+    font-size: 40px;
+  }
+  .subtitle {
+    font-size: 30px;
+  }
+}
