@@ -28,12 +28,13 @@
     flex-direction: column;
     height: 100%;
     padding: 24px;
-    justify-content: center;
+    justify-content: space-between; /* Changed from center to space-between */
     background: linear-gradient(to bottom, rgba(2, 86, 175, 0.6), rgba(0, 1, 1, 0.6));
 }
 
 .slide-top {
-    margin-top: 32;
+    margin-top: 32px;
+    flex: 0 0 auto;
 }
 
 .logo {
@@ -44,29 +45,39 @@
 
 .tagline{
     font-size: 30px;
-    margin:4px 0 0 0;
+    margin: 4px 0 0 0;
+}
+
+.slide-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .slide-bottom{
-    margin: 48px;
+    flex: 0 0 auto;
+    margin-bottom: 40px; /* Added bottom margin for spacing from edge */
 }
+
 .title{
     text-align: center;
     font-size: 22px;
-    font-size: 600;
+    font-weight: 600;
     margin: 0 0 8px 0;
 }
 
 .subtitle{
     font-size: 14px;
-    margin:0;
+    margin: 0;
     text-align: center;
 }
 
 .dots{
     display: flex;
     justify-content: center;
-    margin: 16px 0;
+    margin: 16px 0 24px 0; /* Increased bottom margin */
 }
 
 .dot {
@@ -79,73 +90,117 @@
 }
 
 .dot.active {
-  background-color: white;
+    background-color: white;
 }
 
-/* ...existing code... */
-
 .buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 16px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 0 20px; /* Added padding for better spacing */
+}
+
+/* When showing Get Started button */
+.buttons.get-started {
+    justify-content: center;
 }
 
 .btn-link {
-  background: rgba(0, 123, 255, 0.8);
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 12px 20px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  
+    background: rgba(0, 123, 255, 0.8);
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    min-width: 80px;
 }
 
 .btn-link:hover {
-  background-color: rgba(9, 16, 102, 0.629);;
-  transform: translateY(-2px);
+    background-color: rgba(9, 16, 102, 0.8);
+    transform: translateY(-2px);
 }
 
 .btn-get-started {
     background: linear-gradient(135deg, #365af8 0%, #0334a7 100%);
-  border: none;
-  border-radius: 30px;
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 16px 32px;
-  margin-top: 12px;
-  transition: all 0.3s ease;
-  width: 100%;
-  max-width: 300px;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 16px 40px;
+    transition: all 0.3s ease;
+    max-width: 300px;
+    min-width: 200px;
 }
 
 .btn-get-started:hover {
-    background: linear-gradient(135deg, #000205a1 0%, #000205a1 100%);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    background: linear-gradient(135deg, #2548d6 0%, #021f85 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
 }
 
 .btn-get-started:active {
-  transform: translateY(-1px);
+    transform: translateY(-1px);
 }
-
-/* ...existing code... */
 
 /* Responsive: adjust on larger screens */
 @media (min-width: 768px) {
-  .slide {
-    border-radius: 16px;
-    overflow: hidden;
-  }
-  .title {
-    font-size: 40px;
-  }
-  .subtitle {
-    font-size: 30px;
-  }
+    .slide {
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    
+    .title {
+        font-size: 40px;
+    }
+    
+    .subtitle {
+        font-size: 30px;
+    }
+    
+    .slide-bottom {
+        margin-bottom: 60px;
+    }
+    
+    .buttons {
+        padding: 0 40px;
+    }
+    
+    .btn-get-started {
+        font-size: 20px;
+        padding: 18px 48px;
+    }
+    
+    .btn-link {
+        font-size: 18px;
+        padding: 14px 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .slide-bottom {
+        margin-bottom: 20px;
+    }
+    
+    .buttons {
+        padding: 0 10px;
+    }
+    
+    .btn-link {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-width: 60px;
+    }
+    
+    .btn-get-started {
+        font-size: 16px;
+        padding: 14px 32px;
+        min-width: 180px;
+    }
 }

@@ -1,5 +1,6 @@
 import { useState,useEffect} from 'react';
 import './Onboarding.css'
+import { useNavigate } from 'react-router-dom';
 
 const slides =[
     {
@@ -27,8 +28,9 @@ const slides =[
 ];
 
 function Onboarding(){
+    
     const [current,setCurrent]=useState(0);
-
+    const navigate=useNavigate()
     const nextSlide = () => {
         setCurrent((prev)=> Math.min(prev+1,slides.length-1));
     };
@@ -38,7 +40,7 @@ function Onboarding(){
         
     };
     const getstarter =() =>{
-
+        navigate('/home')
     }
     useEffect(() => {
         const interval = setInterval(() => {
@@ -62,33 +64,37 @@ function Onboarding(){
             >
                 <div className='slide-content'>
                     <div className='slide-top'>
-                        {slides[current].logo &&(
+                        {slides[current].logo && (
                             <>
-                            <h1 className='logo'>{slides[current].logo}</h1>
-                            <p className='tagline'>{slides[current].tagline}</p>
+                                <h1 className='logo'>{slides[current].logo}</h1>
+                                <p className='tagline'>{slides[current].tagline}</p>
                             </>
                         )}
                     </div>
-                    <div className='slide-buttom'>
+                    
+                    <div className='slide-center'>
                         <h2 className='title'>{slides[current].title}</h2>
                         <p className='subtitle'>{slides[current].subtitle}</p>
-
+                    </div>
+                    
+                    <div className='slide-bottom'>
                         <div className='dots'>
-                            {slides.map((_,i)=>(
-                                <span 
-                                key={i}
-                                className={`dot ${i===current? 'active':''}`}
+                            {slides.map((_, i) => (
+                                <span
+                                    key={i}
+                                    className={`dot ${i === current ? 'active' : ''}`}
                                 ></span>
                             ))}
                         </div>
-                    <div className='buttons'>{current < slides.length-1?(
-                        <>
-                        <button className='btn-link' onClick={skip}>Skip</button>
-                        <button className='btn-link' onClick={nextSlide}>Next</button>
-                    </>
-                ):(
-                    <button className='btn-get-started'onClick={getstarter}>Get Started</button>
-                )}
+                        <div className={`buttons ${current < slides.length - 1 ? '' : 'get-started'}`}>
+                            {current < slides.length - 1 ? (
+                                <>
+                                    <button className='btn-link' onClick={skip}>Skip</button>
+                                    <button className='btn-link' onClick={nextSlide}>Next</button>
+                                </>
+                            ) : (
+                                <button className='btn-get-started' onClick={getstarter}>Get Started</button>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,32 @@
+.btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s ease;
+}
+
+.btn.primary {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn.primary:disabled {
+  background-color: #a0c0f5;
+  cursor: not-allowed;
+}
+
+.btn.secondary {
+  background: none;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+}
+
+.btn.secondary:disabled {
+  color: #999;
+  border-color: #ccc;
+  cursor: not-allowed;
+}

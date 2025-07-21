@@ -1,10 +1,9 @@
-import Onboarding from './components/Onboarding'
-
+import AppRoutes from './routes/AppRoutes';
 function App() {
 
   return (
       <div className='App' >
-       <Onboarding />
+       <AppRoutes/>;
       </div>
   );
 }

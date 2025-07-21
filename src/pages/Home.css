@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide:wght@400;500;600;700&family=Open+Sans:wght@400;600;700&family=Raleway:wght@400;500;600&display=swap');
+
+/* Main Background */
+.home-bg {
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Background Logo */
+.home-logo-bg {
+  background-image: url('/assets/medical-logo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 500px 700px;
+  width: 100%;
+  height: 100%;
+  margin-top: 200px;
+  margin-left: 150px;
+  position: fixed;
+  opacity: 0.3;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+/* Main Content Container */
+.home-content {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 2px solid rgba(21, 87, 214, 0.1);
+  padding: 48px 32px;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 8px 32px rgba(21, 87, 214, 0.15),
+    0 4px 16px rgba(21, 87, 214, 0.1),
+    0 2px 8px rgba(21, 87, 214, 0.08);
+}
+
+.home-content:hover {
+  box-shadow: 
+    0 8px 32px rgba(21, 87, 214, 0.15),
+    0 4px 16px rgba(21, 87, 214, 0.1),
+    0 2px 8px rgba(21, 87, 214, 0.08);
+}
+
+/* Welcome Text */
+.home-welcome {
+  font-family: 'Audiowide', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+/* Main Title */
+.home-title {
+  font-family: 'Audiowide', sans-serif;
+  font-size: 4.5rem;
+  color: #1557d6;
+  margin-bottom: 1.7rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 4px rgba(21, 87, 214, 0.1);
+}
+
+/* Subtitle */
+.home-subtitle {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 2rem;
+  margin-top: 1em;
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+}
+
+/* Button Styling */
+.home-btn {
+  width: 100%;
+  max-width: 350px;
+  padding: 0.8rem 0;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(21, 87, 214, 0.1);
+}
+
+/* Primary Button */
+.home-btn.primary {
+  background: transparent;
+  color: #1557d6;
+  border: 1.5px solid #1557d6;
+}
+
+.home-btn.primary:hover,
+.home-btn.primary:focus {
+  background: #1557d6;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 16px rgba(21, 87, 214, 0.25),
+    0 3px 8px rgba(21, 87, 214, 0.15);
+}
+
+/* Secondary Button */
+.home-btn.secondary {
+  background: transparent;
+  color: #1557d6;
+  border: 1.5px solid #1557d6;
+  margin-bottom: 0;
+}
+
+.home-btn.secondary:hover,
+.home-btn.secondary:focus {
+  background: #1557d6;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 16px rgba(21, 87, 214, 0.25),
+    0 3px 8px rgba(21, 87, 214, 0.15);
+}
+
+/* Button Animation Effect */
+.home-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.home-btn:hover::before {
+  left: 100%;
+}
+
+/* Form container */
+.home-form {
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .home-title {
+    font-size: 3.5rem;
+  }
+  
+  .home-welcome {
+    font-size: 1.2rem;
+  }
+  
+  .home-subtitle {
+    font-size: 0.85rem;
+    max-width: 90%;
+  }
+  
+  .home-btn {
+    font-size: 0.9rem;
+    padding: 0.7rem 0;
+    box-shadow: 0 2px 6px rgba(21, 87, 214, 0.08);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 3rem;
+  }
+  
+  .home-welcome {
+    font-size: 1.1rem;
+  }
+  
+  .home-subtitle {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .home-title {
+    font-size: 2.5rem;
+  }
+  
+  .home-welcome {
+    font-size: 1rem;
+  }
+  
+  .home-subtitle {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .home-title {
+    font-size: 2rem;
+  }
+  
+  .home-btn {
+    padding: 0.6rem 0;
+    font-size: 0.85rem;
+  }
+}
+
+/* Focus visible for accessibility */
+.home-btn:focus-visible {
+  outline: 2px solid #1557d6;
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .home-btn::before {
+    display: none;
+  }
+}
