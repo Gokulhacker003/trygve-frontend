@@ -1,90 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userExists, findUserByEmailOrPhone } from '../../utils/authStore'; // Import functions from authStore
+import { setupRecaptcha, sendOtp, cleanupRecaptcha } from '../../services/firebase/auth';
+import { findUserByEmailOrPhone } from '../../utils/authStore';
 import './Login.css';
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', phone: '' });
   const [error, setError] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate('/home');
-  };
+  // Set up the reCAPTCHA verifier when the component mounts
+  useEffect(() => {
+    // Clean up on mount and unmount
+    cleanupRecaptcha();
+    return () => cleanupRecaptcha();
+  }, []);
+
+  const handleBack = () => navigate('/home');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const updatedValue = name === 'phone' ? value.replace(/\D/g, '') : value;
+    
+    if (name === 'phone' && updatedValue.length > 10) return;
 
-    if (name === 'phone') {
-      const numericValue = value.replace(/\D/g, '');
-      if (numericValue.length <= 10) {
-        setFormData(prev => ({ ...prev, [name]: numericValue }));
-      }
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-
-    // Clear any existing error when user starts typing again
+    setFormData(prev => ({ ...prev, [name]: updatedValue }));
     if (error) setError('');
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
 
-    // Basic validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email || !emailRegex.test(formData.email)) {
+    // --- Step 1: Standard Form Validation ---
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       setError('Please enter a valid email address');
       return;
     }
-
-    if (!formData.phone || formData.phone.length !== 10) {
+    if (formData.phone.length !== 10) {
       setError('Please enter a valid 10-digit phone number');
       return;
     }
     
-    // Check if user exists in the authStore and verify credentials match
+    // --- Step 2: Check if user exists and credentials match ---
     const userByEmail = findUserByEmailOrPhone(formData.email);
     const userByPhone = findUserByEmailOrPhone(formData.phone);
 
-    if (!userByEmail && !userByPhone) {
-      setError('No account found with this email or phone. Please sign up first.');
+    if (!userByEmail || !userByPhone || userByEmail.phone !== formData.phone) {
+      setError('The email or phone number does not match our records.');
       return;
     }
 
-    // If we found a user by email but the phone doesn't match
-    if (userByEmail && userByEmail.phone !== formData.phone) {
-      setError('The phone number does not match our records for this email.');
-      return;
+    setIsSending(true);
+    
+    // --- Step 3: Firebase Phone Authentication ---
+    try {
+      const userFullName = userByEmail.fullName || 'User';
+      const recaptchaVerifier = setupRecaptcha('recaptcha-container');
+      if (!recaptchaVerifier) throw new Error("Failed to set up reCAPTCHA");
+      
+      const fullPhoneNumber = `+91${formData.phone}`;
+      await sendOtp(fullPhoneNumber, recaptchaVerifier);
+      
+      navigate('/otp-verify', {
+        state: {
+          flow: 'login',
+          phone: formData.phone,
+          email: formData.email,
+          fullName: userFullName,
+        },
+      });
+
+    } catch (error) {
+      console.error("Firebase OTP Error:", error);
+      setError("Failed to send OTP. Please try again later.");
+    } finally {
+      setIsSending(false);
     }
-
-    // If we found a user by phone but the email doesn't match
-    if (userByPhone && userByPhone.email !== formData.email) {
-      setError('The email does not match our records for this phone number.');
-      return;
-    }
-
-    // Get user details - at this point we know they match
-    const user = userByEmail && userByPhone;
-    const userFullName = user?.fullName || 'User';
-
-    // Generate OTP
-    const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
-    const generatedOtp = generateOtp();
-
-    console.log('Login OTP (Dev):', generatedOtp);
-    alert(`Sending OTP to +91 ${formData.phone} and ${userFullName}`);
-
-    // Navigate with state, including user's fullName
-    navigate('/login-otp', {
-      state: {
-        email: formData.email,
-        phone: formData.phone,
-        fullName: userFullName, // Pass the user's name to the OTP page
-        flow: 'login',
-        otp: generatedOtp,
-      },
-    });
   };
 
   const handleSignUp = (e: React.MouseEvent) => {
@@ -99,6 +92,9 @@ function Login() {
       </button>
 
       <div className="login-content">
+        {/* This empty div is required for Firebase's invisible reCAPTCHA */}
+        <div id="recaptcha-container"></div>
+
         <div className="medical-background" />
         <div className="login-header">
           <h1 className="login-title">OTP Verification</h1>
@@ -119,7 +115,6 @@ function Login() {
               value={formData.email}
               onChange={handleInputChange}
               required
-              autoComplete="email"
             />
           </div>
 
@@ -133,28 +128,22 @@ function Login() {
               placeholder="Enter 10-digit number"
               value={formData.phone}
               onChange={handleInputChange}
-              maxLength={10}
-              pattern="[0-9]{10}"
               required
-              autoComplete="tel"
-              inputMode="numeric"
             />
           </div>
 
           <button
             type="submit"
             className="login-button"
-            disabled={formData.phone.length !== 10 || !formData.email}
+            disabled={isSending || formData.phone.length !== 10 || !formData.email}
           >
-            Send OTP
+            {isSending ? 'Sending...' : 'Send OTP'}
           </button>
         </form>
 
         <div className="login-footer">
           Don't have an account?{' '}
-          <a href="#" onClick={handleSignUp} role="button" tabIndex={0}>
-            Sign up
-          </a>
+          <a href="#" onClick={handleSignUp}>Sign up</a>
         </div>
       </div>
     </div>

@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import {  useNavigate } from 'react-router-dom';
+import { setupRecaptcha, sendOtp, cleanupRecaptcha } from '../../services/firebase/auth';
+import { checkUserExists } from '../../utils/authStore'; // Import the checkUserExists function
 import './SignUp.css';
 
 function SignUp() {
   const [phone, setPhone] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [phoneExistsError, setPhoneExistsError] = useState('');
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -19,33 +23,62 @@ function SignUp() {
     const value = e.target.value.replace(/\D/g, '');
     if (value.length <= 10) {
       setPhone(value);
+      setPhoneExistsError(''); // Clear the error when the user types
     }
   };
 
-  const handleSendCode = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (phone.length !== 10) {
-        alert('Please enter a valid 10-digit phone number');
-        return;
-    }
-    
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log('Signup OTP:', generatedOtp);
+  useEffect(() => {
+    // Set up reCAPTCHA
+    setupRecaptcha('recaptcha-container');
 
-    // Store OTP session details in local storage as a JSON string
-    const otpSession = {
-        phone: phone,
-        otp: generatedOtp,
-        source: 'signup',
-        timestamp: new Date().getTime() // Add a timestamp for expiration
+    // Clean up reCAPTCHA on unmount
+    return () => {
+      cleanupRecaptcha();
     };
-    localStorage.setItem('otp_session', JSON.stringify(otpSession));
-    
-    alert(`Sending OTP to +91 ${phone}... (Check console for OTP)`);
-    
-    // Navigate without state
-    navigate('/signup-otp');
+  }, []);
+
+  const handleSendCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (phone.length !== 10) {
+      alert('Please enter a valid 10-digit phone number');
+      return;
+    }
+
+    // Check if the phone number already exists
+    if (checkUserExists(phone)) {
+      setPhoneExistsError('This phone number is already registered. Please log in.');
+      return; // Do not send the OTP
+    } else {
+      setPhoneExistsError(''); // Clear the error if it doesn't exist
+    }
+
+    setIsSending(true);
+
+    try {
+      const fullPhoneNumber = `+91${phone}`;
+      if (window.recaptchaVerifier) {
+        await sendOtp(fullPhoneNumber, window.recaptchaVerifier);
+      } else {
+        console.error("RecaptchaVerifier is not initialized.");
+        alert("Failed to send OTP. Please refresh the page and try again.");
+      }
+
+      alert(`Sending OTP to +91 ${phone}...`);
+
+      navigate('/otp-verify', {
+        state: {
+          flow: 'signup',
+          phone: phone,
+        }
+      });
+
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      alert("Failed to send OTP. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -55,6 +88,9 @@ function SignUp() {
       </button>
 
       <div className="signup-content">
+        {/* This empty div is required for Firebase's invisible reCAPTCHA */}
+        <div id="recaptcha-container"></div>
+
         <div className="signup-logo-bg" />
         <div className="signup-header">
           <h2 className="signup-title">Enter Your Phone Number</h2>
@@ -82,9 +118,10 @@ function SignUp() {
               inputMode="numeric"
             />
           </div>
+          {phoneExistsError && <p className="error-message">{phoneExistsError}</p>} {/* Display the error message */}
 
-          <button type="submit" className="signup-button" disabled={phone.length !== 10}>
-            Send Code
+          <button type="submit" className="signup-button" disabled={phone.length !== 10 || isSending || phoneExistsError !== ''}>
+            {isSending ? 'Sending...' : 'Send Code'}
           </button>
         </form>
 

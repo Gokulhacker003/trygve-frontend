@@ -89,3 +89,60 @@ export const findUserByEmailOrPhone = (emailOrPhone: string): AuthUser | null =>
   ) || null;
 };
 
+/**
+ * Check if user exists by email or phone
+ * @param identifier Email or phone to check
+ * @returns {boolean} True if user exists, false otherwise
+ */
+export const checkUserExists = (identifier: string): boolean => {
+  // Get users from localStorage
+  const users = getAllUsers();
+  
+  // Clean up the identifier (remove spaces, make lowercase for email)
+  const cleanIdentifier = identifier.trim().toLowerCase();
+  
+  // Check for matches (case insensitive for emails)
+  return users.some(user => 
+    user.email.toLowerCase() === cleanIdentifier || 
+    user.phone === cleanIdentifier
+  );
+};
+
+/**
+ * Validate signup data and return any errors
+ * @param userData User data to validate
+ * @returns Object with error messages or null if valid
+ */
+export const validateSignupData = (userData: {
+  email: string;
+  phone: string;
+  fullName?: string;
+}) => {
+  const errors: Record<string, string> = {};
+  
+  // Check required fields
+  if (!userData.email) errors.email = "Email is required";
+  if (!userData.phone) errors.phone = "Phone number is required";
+  
+  // Email format validation
+  if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
+    errors.email = "Please enter a valid email address";
+  }
+  
+  // Phone format validation (assuming 10 digit)
+  if (userData.phone && !/^\d{10}$/.test(userData.phone)) {
+    errors.phone = "Please enter a valid 10-digit phone number";
+  }
+  
+  // Check if user already exists
+  if (userData.email && checkUserExists(userData.email)) {
+    errors.email = "This email is already registered";
+  }
+  
+  if (userData.phone && checkUserExists(userData.phone)) {
+    errors.phone = "This phone number is already registered";
+  }
+  
+  return Object.keys(errors).length > 0 ? errors : null;
+};
+

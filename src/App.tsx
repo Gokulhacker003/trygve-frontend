@@ -1,11 +1,19 @@
+import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
-function App() {
+import { AuthProvider } from './contexts/AuthContext';
+import './App.css';
 
+function App() {
   return (
-      <div className='App' >
-       <AppRoutes/>;
-      </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className='App'>
+          {/* AppRoutes will now render all the pages based on the URL */}
+          <AppRoutes />
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
-export default App
+export default App;

@@ -1,28 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MapPin, User, Mail, Phone } from 'lucide-react';
 import './CreateAccount.css';
 import { registerUser } from '../../utils/authStore'; // Use relative path or configure path aliases
 
 function CreateAccount() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    const authStatus = localStorage.getItem('auth_flow_status');
-    if (authStatus !== 'can_create_account') {
-      console.warn("Direct access to /create-account is not permitted. Redirecting.");
-      navigate('/home', { replace: true });
-    }
-  }, [navigate]);
+    // --- DEBUGGING STEP ---
+    // Add this line to see what the state is when the page loads.
+    console.log('Navigated to CreateAccount with location.state:', location.state);
+    // --- END DEBUGGING STEP ---
 
-  const [form, setForm] = useState({
+    // Check if the state object exists and has the correct property
+    if (location.state?.from !== 'otp-verified') {
+      console.log('Direct access to /create-account is not permitted. Redirecting.');
+      alert('You must verify your phone number first.');
+      navigate('/signup'); // Redirect if permission is not granted
+    }
+  }, [location, navigate]);
+
+  const [form, setForm] = React.useState({
     fullName: '',
     email: '',
     location: '',
     secondaryPhone: '',
   });
 
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = React.useState({
     fullName: '',
     email: '',
     secondaryPhone: '',

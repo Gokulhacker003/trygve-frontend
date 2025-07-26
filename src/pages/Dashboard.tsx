@@ -1,101 +1,101 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Calendar,
-  User,
-  LogOut,
-  HeartPulse,
-  ClipboardList,
-} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Dashboard.css';
 
-export default function Dashboard() {
+interface WelcomeState {
+  from: 'welcome';
+  name: string;
+}
+
+function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAllowed, setIsAllowed] = useState(false);
+  const [username, setUsername] = useState('User');
+
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuthenticated');
+    console.log('authStatus:', authStatus);
+
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+    } else {
+      console.warn('User is not authenticated. Redirecting to login...');
+      navigate('/login', { replace: true });
+      return;
+    }
+
+    const state = location.state as WelcomeState | null;
+
+    if (state?.from === 'welcome' && state.name) {
+      setUsername(state.name);
+      setIsAllowed(true);
+    } else {
+      console.warn('Unauthorized access to /dashboard. Redirecting...');
+      navigate('/login', { replace: true });
+    }
+  }, [navigate, location.state]);
 
   const handleLogout = () => {
-    // Add any logout logic here (e.g., clearing tokens)
-    console.log('User logged out');
-    navigate('/login');
+    // Clear authentication status
+    localStorage.removeItem('isAuthenticated');
+
+    // Redirect to login
+    navigate('/login', { replace: true });
   };
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>; // Display a loading indicator
+  }
+
+  if (!isAllowed) {
+    return null; // Don't render anything if not allowed
+  }
 
   return (
     <div className="dashboard-layout">
       {/* Sidebar */}
       <aside className="dashboard-sidebar">
         <div className="sidebar-header">
-          <img src="/assets/medical-logo.png" alt="Logo" className="sidebar-logo" />
-          <h1 className="sidebar-title">Trygve</h1>
+          <img src="/logo.png" alt="Logo" className="sidebar-logo" />
+          <h1 className="sidebar-title">Dashboard</h1>
         </div>
         <nav className="sidebar-nav">
-          <Link to="/dashboard" className="nav-item active">
-            <LayoutDashboard size={20} />
-            <span>Dashboard</span>
-          </Link>
-          <Link to="/appointments" className="nav-item">
-            <Calendar size={20} />
-            <span>Appointments</span>
-          </Link>
-          <Link to="/profile" className="nav-item">
-            <User size={20} />
-            <span>Profile</span>
-          </Link>
+          <a href="#" className="nav-item">Home</a>
+          <a href="#" className="nav-item">Profile</a>
+          <a href="#" className="nav-item">Settings</a>
         </nav>
         <div className="sidebar-footer">
-          <button onClick={handleLogout} className="nav-item">
-            <LogOut size={20} />
-            <span>Logout</span>
-          </button>
+          <button onClick={handleLogout} className="nav-item active">Logout</button>
+          <p>&copy; 2025 Your Company</p>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="dashboard-main">
         <header className="main-header">
-          <h2 className="header-title">Welcome to TRYGVE</h2>
+          <h1 className="header-title">Welcome, {username}!</h1>
           <div className="header-actions">
             <div className="user-profile">
-              <span>John Doe</span>
-              <div className="user-avatar">JD</div>
+              <div className="user-avatar">{username.charAt(0).toUpperCase()}</div>
+              <span>{username}</span>
             </div>
           </div>
         </header>
-
-        <div className="content-grid">
+        <section className="content-grid">
           <div className="dashboard-card">
-            <div className="card-header">
-              <Calendar size={22} />
-              <h3>Upcoming Appointments</h3>
-            </div>
-            <div className="card-body">
-              <p>You have <strong>2</strong> appointments scheduled for this week.</p>
-              <p>Next: Dr. Smith - Cardiology - July 22, 2025 at 10:00 AM</p>
-            </div>
+            <div className="card-header">Card Title</div>
+            <div className="card-body">This is a placeholder for card content.</div>
           </div>
-
           <div className="dashboard-card">
-            <div className="card-header">
-              <HeartPulse size={22} />
-              <h3>Health Summary</h3>
-            </div>
-            <div className="card-body">
-              <p>Your recent vitals are stable. Blood pressure: 120/80 mmHg.</p>
-              <p>No new alerts or recommendations.</p>
-            </div>
+            <div className="card-header">Card Title</div>
+            <div className="card-body">This is a placeholder for card content.</div>
           </div>
-
-          <div className="dashboard-card">
-            <div className="card-header">
-              <ClipboardList size={22} />
-              <h3>Recent Activity</h3>
-            </div>
-            <div className="card-body">
-              <p>New lab results available for your review.</p>
-              <p>Prescription for 'Metformin' was refilled on July 18, 2025.</p>
-            </div>
-          </div>
-        </div>
+        </section>
       </main>
     </div>
   );
 }
+
+export default Dashboard;
