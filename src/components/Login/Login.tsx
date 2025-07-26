@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setupRecaptcha, sendOtp, cleanupRecaptcha } from '../../services/firebase/auth';
+import { setupRecaptcha, sendOtp, cleanupRecaptcha } from '../../firebase/auth';
 import { findUserByEmailOrPhone } from '../../utils/authStore';
 import './Login.css';
 

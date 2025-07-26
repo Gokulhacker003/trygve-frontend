@@ -88,7 +88,6 @@ function OtpVerification() {
     try {
       const result = await confirmationResult.confirm(enteredCode);
       console.log("Firebase sign-in successful:", result.user);
-      alert('OTP verified successfully!');
       delete (window as any).confirmationResult;
       localStorage.setItem('isAuthenticated', 'true');
 

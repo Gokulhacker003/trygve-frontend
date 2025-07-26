@@ -99,11 +99,11 @@ export const checkUserExists = (identifier: string): boolean => {
   const users = getAllUsers();
   
   // Clean up the identifier (remove spaces, make lowercase for email)
-  const cleanIdentifier = identifier.trim().toLowerCase();
+  const cleanIdentifier = identifier.trim();
   
   // Check for matches (case insensitive for emails)
   return users.some(user => 
-    user.email.toLowerCase() === cleanIdentifier || 
+    user.email === cleanIdentifier || 
     user.phone === cleanIdentifier
   );
 };

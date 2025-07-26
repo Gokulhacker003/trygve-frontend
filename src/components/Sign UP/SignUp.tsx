@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {  useNavigate } from 'react-router-dom';
-import { setupRecaptcha, sendOtp, cleanupRecaptcha } from '../../services/firebase/auth';
+import { setupRecaptcha, sendOtp, cleanupRecaptcha } from '../../firebase/auth';
 import { checkUserExists } from '../../utils/authStore'; // Import the checkUserExists function
 import './SignUp.css';
 
@@ -11,7 +11,7 @@ function SignUp() {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate('/');
+    navigate('/home');
   };
 
   const handleLogin = (e: React.MouseEvent) => {
@@ -63,9 +63,6 @@ function SignUp() {
         console.error("RecaptchaVerifier is not initialized.");
         alert("Failed to send OTP. Please refresh the page and try again.");
       }
-
-      alert(`Sending OTP to +91 ${phone}...`);
-
       navigate('/otp-verify', {
         state: {
           flow: 'signup',
